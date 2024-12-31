@@ -1,4 +1,5 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 
@@ -10,6 +11,8 @@ const globalErrorHandler = require("./controllers/errorController");
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
+
 app.use(mongoSanitize());
 app.use(xss());
 

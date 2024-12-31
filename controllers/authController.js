@@ -15,12 +15,14 @@ const signToken = (id) => {
 const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
   const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
     ),
-    httpOnly: true,
   };
-  if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+
   res.cookie("jwt", token, cookieOptions);
   user.password = undefined;
   res.status(statusCode).json({
@@ -66,3 +68,62 @@ exports.login = catchAsync(async (req, res, next) => {
   // 3) If everything ok, send token to client
   createSendToken(user, 200, res);
 });
+
+exports.logout = catchAsync(async (req, res, next) => {
+  res.cookie("jwt", "loggedout", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
+    expires: new Date(Date.now() + 10 * 1000),
+  });
+  res.status(200).json({ status: "success" });
+});
+
+exports.protect = catchAsync(async (req, res, next) => {
+  // 1) Getting token and check if it is exists
+
+  const token = req.cookies.jwt;
+
+  if (!token) {
+    return next(
+      new AppError("You are not logged in! Please log in to get access.", 401),
+    );
+  }
+
+  // 2) Verification token
+
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  // 3) Check if user still exists
+  const freshUser = await User.findById(decoded.id);
+  if (!freshUser)
+    next(
+      new AppError(
+        "The user belonging to this token does no longer exist.",
+        401,
+      ),
+    );
+
+  // 4) Check if user changed password after the JWT token was issued
+
+  if (freshUser.changedPasswordAfter(decoded.iat)) {
+    return next(
+      new AppError("User recently changed password! Please log in again", 401),
+    );
+  } // iat is the time the token was issued
+
+  // Grant access to protected route
+  req.user = freshUser;
+  next();
+});
+
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError("You do not have permission to perform this action", 403),
+      );
+    }
+    next();
+  };
+};
