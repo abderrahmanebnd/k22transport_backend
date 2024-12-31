@@ -2,7 +2,7 @@ const AppError = require("./../utils/appError");
 
 const handleCastErrorDB = (err) => {
   // Handle cast error which means invalid id
-  const message = `Invalid ${err.path}: ${err.value}.`;
+  const message = `Invalide ${err.path}: ${err.value}.`;
   return new AppError(message, 400);
 };
 
@@ -11,14 +11,15 @@ const handleDuplicateFieldsDB = (err) => {
   const duplicateField = Object.keys(err.keyValue)[0];
   const duplicateValue = err.keyValue[duplicateField];
 
-  const message = `Duplicate value for ${duplicateField}: ${duplicateValue}. Please use a different ${duplicateField}.`;
+  // const message = `Cet ${duplicateField}: ${duplicateValue}. Please use a different ${duplicateField}.`;
+  const message = `Le champ ${duplicateField} avec la valeur ${duplicateValue} existe déjà. Veuillez utiliser un ${duplicateField} différent.`;
   return new AppError(message, 400);
 };
 
 const handleValidationErrorDB = (err) => {
   const errors = Object.values(err.errors).map((el) => el.message);
 
-  const message = `Invalid input data. ${errors.join(". ")}`;
+  const message = `${errors.join(". ")}`;
   return new AppError(message, 400);
 };
 
@@ -32,10 +33,10 @@ const sendErrorDev = (err, res) => {
 };
 
 const handleJWTError = () =>
-  new AppError("Invalid token. PLease log in again.", 401);
+  new AppError("Token invalide. Veuillez vous reconnecter.", 401);
 
 const handleJWTExpiredError = () =>
-  new AppError("Your token has expired. PLease log in again.", 401);
+  new AppError("Votre token a expiré. Veuillez vous reconnecter.", 401);
 
 const sendErrorProd = (err, res) => {
   // Operational, trusted error: send message to client
@@ -67,7 +68,7 @@ module.exports = (err, req, res, next) => {
   if (process.env.NODE_ENV === "development") {
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === "production") {
-    let error = { ...err };
+    let error = err;
 
     if (err.name === "CastError") error = handleCastErrorDB(error);
     if (err.code === 11000) error = handleDuplicateFieldsDB(error);

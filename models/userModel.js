@@ -32,6 +32,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Un utilisateur doit avoir un mot de passe"],
     minlength: 8,
+    select: false,
   },
   passwordConfirm: {
     type: String,
@@ -62,6 +63,14 @@ userSchema.pre("save", function (next) {
   // we subtract 1 second because sometimes the token is created before the password is changed
   next();
 });
+
+// Instance Method
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword,
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
