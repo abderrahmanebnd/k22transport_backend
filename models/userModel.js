@@ -1,41 +1,50 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
+const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "A user must have a name"],
-    maxLength: [40, "A user name must have less or equal then 40 characters"],
+    required: [true, "Un utilisateur doit avoir un nom"],
+    maxLength: [
+      40,
+      "Le nom d'un utilisateur doit avoir moins ou égal à 40 caractères",
+    ],
     trim: true,
   },
   email: {
     type: String,
-    required: [true, "A user must have an email"],
+    required: [true, "Un utilisateur doit avoir un email"],
+    trim: true,
     unique: true,
+    lowercase: true,
+    validate: [validator.isEmail, "Veuillez fournir un email valide"],
   },
   role: {
     type: String,
-    enum: ["user", "admin", "driver"],
-    default: "user",
+    enum: {
+      values: ["client", "admin", "driver"],
+      message: "Le rôle est soit: client, driver",
+    },
+    default: "client",
   },
   password: {
     type: String,
-    required: [true, "A user must have a password"],
+    required: [true, "Un utilisateur doit avoir un mot de passe"],
     minlength: 8,
   },
   passwordConfirm: {
     type: String,
-    required: [true, "Please confirm your password"],
+    required: [true, "Veuillez confirmer votre mot de passe"],
     validate: {
       validator: function (el) {
         return el === this.password;
       },
-      message: "Passwords are not the same!",
+      message: "Les mots de passe ne sont pas identiques!",
     },
   },
   passwordChangedAt: Date,
 });
-
-// Query Middleware
 
 const User = mongoose.model("User", userSchema);
 

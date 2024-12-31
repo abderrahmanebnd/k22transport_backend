@@ -29,6 +29,7 @@ const missionSchema = new mongoose.Schema({
   },
   carMatricule: {
     type: String,
+
     validate: {
       validator: function (el) {
         const regex = /^[A-HJ-NP-TV-Z]{2}-\d{3}-[A-HJ-NP-TV-Z]{2}$/;

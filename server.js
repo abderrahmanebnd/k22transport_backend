@@ -7,7 +7,8 @@ process.on("uncaughtException", (err) => {
   process.exit(1);
 });
 
-dotenv.config({ path: "./config.env" });
+dotenv.config({ path: "./config.env" }); // this line will read the config.env file and save it in the environment variables
+
 const app = require("./app");
 
 const DB = process.env.DATABASE.replace(
