@@ -33,11 +33,10 @@ const createSendToken = (user, statusCode, res) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const { role } = req.body;
+  let { role } = req.body;
 
-  // Validate the role
   if (role && !["client", "driver"].includes(role)) {
-    return next(new AppError("Invalid role provided.", 400));
+    return next(new AppError("role must be either driver or client", 400));
   }
 
   const newUser = await User.create({
