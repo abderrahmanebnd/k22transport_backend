@@ -18,7 +18,11 @@ const missionSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["in_progress", "completed"],
+    enum: {
+      values: ["in_progress", "completed", "cancelled"],
+      message:
+        "Le status d'une mission doit être soit 'in_progress', 'completed' ou 'cancelled'",
+    },
     default: "in_progress",
   },
   assignedDriver: {
@@ -47,7 +51,7 @@ const missionSchema = new mongoose.Schema({
 // Query Middleware
 missionSchema.pre(/^find/, function (next) {
   this.populate({
-    path: "user",
+    path: "assignedDriver",
     select: "name email",
   });
   next();
