@@ -83,7 +83,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and check if it is exists
 
   const token = req.cookies.jwt;
-
+  console.log(token);
   if (!token) {
     return next(
       new AppError("You are not logged in! Please log in to get access.", 401),
