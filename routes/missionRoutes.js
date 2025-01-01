@@ -5,7 +5,7 @@ const router = express.Router();
 
 router
   .route("/")
-  //   .get(missionController.getAllMissions)
+  .get(missionController.getAllMissions)
   .post(
     authController.protect,
     authController.restrictTo("admin"),
