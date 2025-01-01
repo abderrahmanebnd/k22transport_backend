@@ -11,7 +11,6 @@ const missionSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    required: [true, "Une mission doit avoir une description"],
     maxLength: [
       300,
       "La description d'une mission doit contenir moins ou égal à 200 caractères",
@@ -29,7 +28,6 @@ const missionSchema = new mongoose.Schema({
   },
   carMatricule: {
     type: String,
-
     validate: {
       validator: function (el) {
         const regex = /^[A-HJ-NP-TV-Z]{2}-\d{3}-[A-HJ-NP-TV-Z]{2}$/;

@@ -1,5 +1,10 @@
 const express = require("express");
+const missionController = require("../controllers/missionController");
+const router = express.Router();
 
-const missionRouter = express.Router();
+router
+  .route("/")
+  //   .get(missionController.getAllMissions)
+  .post(missionController.createMission);
 
-module.exports = missionRouter;
+module.exports = router;
