@@ -75,6 +75,7 @@ exports.logout = catchAsync(async (req, res, next) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: "Strict",
     expires: new Date(Date.now() + 10 * 1000),
+    // just for saving my streak in github
   });
   res.status(200).json({ status: "success" });
 });
