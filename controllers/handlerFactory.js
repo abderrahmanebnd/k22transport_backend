@@ -46,7 +46,7 @@ exports.createOne = (Model, dataName = "data") =>
 
 exports.getOne = (Model, dataName = "data", popOptions) =>
   catchAsync(async (req, res, next) => {
-    let query = Model.findById(req.params.id);
+    let query = Model.findById(req.params.id).select("-__v");
     if (popOptions) query = query.populate(popOptions);
     const doc = await query;
 
