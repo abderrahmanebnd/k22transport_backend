@@ -12,7 +12,7 @@ const handleDuplicateFieldsDB = (err) => {
   const duplicateValue = err.keyValue[duplicateField];
 
   // const message = `Cet ${duplicateField}: ${duplicateValue}. Please use a different ${duplicateField}.`;
-  const message = `Le champ ${duplicateField} avec la valeur ${duplicateValue} existe déjà. Veuillez utiliser un ${duplicateField} différent.`;
+  const message = `${duplicateValue} existe déjà. Veuillez utiliser un ${duplicateField} différent.`;
   return new AppError(message, 400);
 };
 
