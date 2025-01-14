@@ -8,15 +8,16 @@ const userRouter = require("./routes/userRoutes");
 
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
+const generalRouter = require("./routes/generalRoutes");
 
 const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5173", // Adjust this to the domain of your frontend (e.g., your React app)
-    methods: ["GET", "POST", "PUT", "DELETE"], // List the HTTP methods you want to allow
-    allowedHeaders: ["Content-Type", "Authorization"], // Define allowed headers
-    credentials: true, // Allow cookies to be sent with requests
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   }),
 );
 app.use(express.json());
@@ -25,6 +26,7 @@ app.use(cookieParser());
 app.use(mongoSanitize());
 app.use(xss());
 
+app.use("/api/v1", generalRouter);
 app.use("/api/v1/missions", missionRouter);
 app.use("/api/v1/users", userRouter);
 

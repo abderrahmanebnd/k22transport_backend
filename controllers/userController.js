@@ -1,4 +1,5 @@
 const User = require("../models/userModel");
+const catchAsync = require("../utils/catchAsync");
 const factory = require("./handlerFactory");
 
 exports.getMe = (req, res, next) => {
