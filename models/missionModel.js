@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const missionSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: [true, "Une mission doit avoir un titre"],
     maxLength: [
       50,
       "Le titre d'une mission doit contenir moins ou égal à 40 caractères",
@@ -44,7 +43,7 @@ const missionSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now(),
-    select: false,
+    // select: false,
   },
 });
 
