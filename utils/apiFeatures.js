@@ -2,14 +2,21 @@ class APIFeatures {
   constructor(query, queryString) {
     this.query = query;
     this.queryString = queryString;
+    this.totalDocs = 0;
+    this.limit = 2;
+    this.page = 1;
+  }
+
+  async setTotalDocs(Model) {
+    this.totalDocs = await Model.countDocuments();
+    return this;
   }
 
   filter() {
     const queryObj = { ...this.queryString };
-    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    const excludedFields = ["page", "sort", "limit", "fields"];
     excludedFields.forEach((el) => delete queryObj[el]);
 
-    // 1B) Advanced filtering
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
 
@@ -20,10 +27,10 @@ class APIFeatures {
 
   sort() {
     if (this.queryString.sort) {
-      const sortBy = this.queryString.sort.split(',').join(' ');
+      const sortBy = this.queryString.sort.split(",").join(" ");
       this.query = this.query.sort(sortBy);
     } else {
-      this.query = this.query.sort('-createdAt');
+      this.query = this.query.sort("-createdAt");
     }
 
     return this;
@@ -31,23 +38,32 @@ class APIFeatures {
 
   limitFields() {
     if (this.queryString.fields) {
-      const fields = this.queryString.fields.split(',').join(' ');
+      const fields = this.queryString.fields.split(",").join(" ");
       this.query = this.query.select(fields);
     } else {
-      this.query = this.query.select('-__v');
+      this.query = this.query.select("-__v");
     }
 
     return this;
   }
 
   paginate() {
-    const page = this.queryString.page * 1 || 1;
-    const limit = this.queryString.limit * 1 || 100;
-    const skip = (page - 1) * limit;
+    this.page = this.queryString.page * 1 || 1;
+    this.limit = this.queryString.limit * 1 || 2;
+    const skip = (this.page - 1) * this.limit;
 
-    this.query = this.query.skip(skip).limit(limit);
+    this.query = this.query.skip(skip).limit(this.limit);
 
     return this;
+  }
+
+  getPaginationDetails() {
+    const totalPages = Math.ceil(this.totalDocs / this.limit);
+    return {
+      total: this.totalDocs,
+      currentPage: this.page,
+      totalPages,
+    };
   }
 }
 
