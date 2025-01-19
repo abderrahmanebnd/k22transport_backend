@@ -3,7 +3,7 @@ class APIFeatures {
     this.query = query;
     this.queryString = queryString;
     this.totalDocs = 0;
-    this.limit = 2;
+    this.limit = process.env.PAGE_SIZE;
     this.page = 1;
   }
 
@@ -49,7 +49,7 @@ class APIFeatures {
 
   paginate() {
     this.page = this.queryString.page * 1 || 1;
-    this.limit = this.queryString.limit * 1 || 2;
+    this.limit = this.queryString.limit * 1 || process.env.PAGE_SIZE;
     const skip = (this.page - 1) * this.limit;
 
     this.query = this.query.skip(skip).limit(this.limit);
@@ -63,6 +63,9 @@ class APIFeatures {
       total: this.totalDocs,
       currentPage: this.page,
       totalPages,
+      next: this.page < totalPages,
+      prev: this.page > 1,
+      pageSize: process.env.PAGE_SIZE,
     };
   }
 }

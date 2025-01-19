@@ -72,7 +72,7 @@ exports.getAll = (Model, dataName = "data") =>
     res.status(200).json({
       status: "success",
       results: docs.length,
-      paging: features.getPaginationDetails(), // Add pagination details
+      pagination: features.getPaginationDetails(), // Add pagination details
       [dataName]: docs,
     });
   });
