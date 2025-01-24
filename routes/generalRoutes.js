@@ -1,13 +1,22 @@
 const express = require("express");
-const { getStats } = require("../controllers/generalFuctionsController");
+const {
+  getAdminStats,
+  getDriverStats,
+} = require("../controllers/generalFuctionsController");
 const authController = require("../controllers/authController");
 const generalRouter = express.Router();
 
 generalRouter.get(
-  "/stats",
+  "/admin-stats",
   authController.protect,
   authController.restrictTo("admin"),
-  getStats,
+  getAdminStats,
+);
+generalRouter.get(
+  "/driver-stats",
+  authController.protect,
+  authController.restrictTo("driver"),
+  getDriverStats,
 );
 
 module.exports = generalRouter;

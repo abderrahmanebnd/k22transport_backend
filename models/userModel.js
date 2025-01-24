@@ -11,6 +11,12 @@ const userSchema = new mongoose.Schema({
       "Le nom d'un utilisateur doit avoir moins ou égal à 40 caractères",
     ],
     trim: true,
+    validate: {
+      validator: function (v) {
+        return /^[A-Za-z\s]+$/.test(v);
+      },
+      message: "Le nom ne doit contenir que des lettres et des espaces",
+    },
   },
   email: {
     type: String,

@@ -18,6 +18,22 @@ router
   );
 
 router
+  .route("/my-missions")
+  .get(
+    authController.protect,
+    authController.restrictTo("driver"),
+    missionController.getMyMissions,
+  );
+
+router
+  .route("/by-matricule")
+  .get(
+    authController.protect,
+    authController.restrictTo("client"),
+    missionController.getMissionsByCarMatricule,
+  );
+
+router
   .route("/:id")
   .get(authController.protect, missionController.getMission)
   .delete(
@@ -31,4 +47,5 @@ router
     missionController.restrictUpdateFieldsByRole(permissions),
     missionController.updateMission,
   );
+
 module.exports = router;

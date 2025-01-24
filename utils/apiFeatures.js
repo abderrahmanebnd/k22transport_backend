@@ -7,8 +7,8 @@ class APIFeatures {
     this.page = 1;
   }
 
-  async setTotalDocs(Model) {
-    this.totalDocs = await Model.countDocuments();
+  async setTotalDocs() {
+    this.totalDocs = await this.query.clone().countDocuments();
     return this;
   }
 
