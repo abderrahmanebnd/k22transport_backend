@@ -47,16 +47,13 @@ exports.getMyMissions = factory.getAll(Mission, "missions", (req) => {
 exports.getMissionsByCarMatricule = catchAsync(async (req, res, next) => {
   const { carMatricule } = req.query;
 
-  console.log(carMatricule);
   const features = new APIFeatures(Mission.find({ carMatricule }), req.query);
   await features.setTotalDocs();
   features.filter().paginate().sort();
   const missions = await features.query;
   res.status(200).json({
     status: "success",
-    data: {
-      pagination: features.getPaginationDetails(),
-      missions,
-    },
+    pagination: features.getPaginationDetails(),
+    missions,
   });
 });
