@@ -22,8 +22,7 @@ const createSendToken = (user, statusCode, res) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
     ),
   };
-  console.log({ cookieOptions });
-  console.log(process.env.NODE_ENV);
+
   res.cookie('jwt', token, cookieOptions);
   user.password = undefined;
   res.status(statusCode).json({
@@ -74,7 +73,7 @@ exports.logout = catchAsync(async (req, res, next) => {
   res.clearCookie('jwt', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'Strict',
+    sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // Adjust for cross-site cookies
   });
   res.status(200).json({ status: 'success' });
 });
